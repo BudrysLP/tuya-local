@@ -91,3 +91,32 @@ as diagnostic entities rather than additional writable controls.
 - Upstream fix for fan entity construction:
   https://github.com/make-all/tuya-local/commit/6e78b77e2726
 - Upstream project: https://github.com/make-all/tuya-local
+
+## Hardware validation — 2026-11-24
+
+A Hyundai HRS-PRO250 running the development branch's updated
+`reventon_holtop_smart_erv.yaml` was restarted in Home Assistant and four
+new diagnostic entities were confirmed visible with valid current values:
+
+| Diagnostic entity | DP | Observed value | Interpretation |
+| --- | --- | --- | --- |
+| Supply fan speed level (raw) | 102 | `"9"` | Reported 9-step supply setting |
+| Exhaust fan speed level (raw) | 103 | `"9"` | Reported 9-step exhaust setting |
+| Nine-step fan speed mode | 125 | `true` | Nine-step mode enabled |
+| Fault code (raw) | 119 | `0` | No fault reported |
+
+Other visible values in the same Home Assistant screenshots:
+DP 117 = 16°C, DP 118 = 10°C, DP 113 = 99%, DP 111 = 0 ppm,
+DP 114 = 0 µg/m³, DP 106 setpoint = 23°C, DP 126 = 28 days.
+These are observations only; physical temperature probe mapping and
+optional air-quality sensor availability remain unverified.
+
+All four diagnostics were confirmed present and updating after the HA Core
+restart. The screenshots do **not** verify the write path or prove that
+the reported fan levels represent measured RPM or airflow. They also show
+activity history entries for ventilation toggles and target-temperature
+changes, which should not be attributed to this read-only profile addition
+without separate evidence.
+
+GitHub Actions validation: YAML workflow 45362240735 (3611 passed);
+Python workflow 45362824316 (4013 passed, 2 warnings).
