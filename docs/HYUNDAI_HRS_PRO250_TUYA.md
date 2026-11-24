@@ -187,3 +187,19 @@ which is not evidence of Tuya Local communication failure.
 during settled operation; review diagnostic state after speed changes,
 avoid setting any individual fan to 0; validate new Number sliders
 through GitHub Actions and then, with a backup, in Home Assistant.
+
+## Independent slider CI validation
+
+As of the `43331780` YAML profile revision, the project CI reports:
+
+- YAML tests: success — workflow
+  https://github.com/BudrysLP/tuya-local/actions/runs/45368677011
+- Lint: success — workflow
+  https://github.com/BudrysLP/tuya-local/actions/runs/45368676777
+- Python tests (including both slider value-to-string write-path tests):
+  **4015 passed, 2 warnings** — workflow
+  https://github.com/BudrysLP/tuya-local/actions/runs/45368557000
+
+These CI results validate static mapping and mocked writes, not physical
+fan speeds or safety behavior. Do not issue zero-level write tests until
+verified safe.
