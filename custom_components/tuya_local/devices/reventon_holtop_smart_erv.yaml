@@ -293,3 +293,38 @@ entities:
         name: sensor
         type: integer
         unit: d
+
+
+  # Additional read-only diagnostics for the raw values received over Tuya.
+  # Unlike fan percentages, these retain the device's original 0-9 levels.
+  - entity: sensor
+    name: Supply fan speed level (raw)
+    category: diagnostic
+    dps:
+      - id: 102
+        name: sensor
+        type: string
+
+  - entity: sensor
+    name: Exhaust fan speed level (raw)
+    category: diagnostic
+    dps:
+      - id: 103
+        name: sensor
+        type: string
+
+  - entity: binary_sensor
+    name: Nine-step fan speed mode
+    category: diagnostic
+    dps:
+      - id: 125
+        name: sensor
+        type: boolean
+
+  - entity: sensor
+    name: Fault code (raw)
+    category: diagnostic
+    dps:
+      - id: 119
+        name: sensor
+        type: bitfield
