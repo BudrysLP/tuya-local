@@ -47,9 +47,7 @@ def test_erv_extra_diagnostics_are_read_only(name, entity_type, dp_id, dp_type):
     ],
 )
 @pytest.mark.asyncio
-async def test_erv_speed_sliders_read_and_write_string_dps(
-    mocker, name, dp_id
-):
+async def test_erv_speed_sliders_read_and_write_string_dps(mocker, name, dp_id):
     """0-9 UI levels must be sent as original Tuya string values."""
     profile = TuyaDeviceConfig("reventon_holtop_smart_erv.yaml")
     matches = [entity for entity in profile.all_entities() if entity.name == name]
