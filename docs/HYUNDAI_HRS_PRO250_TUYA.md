@@ -203,3 +203,24 @@ As of the `43331780` YAML profile revision, the project CI reports:
 These CI results validate static mapping and mocked writes, not physical
 fan speeds or safety behavior. Do not issue zero-level write tests until
 verified safe.
+
+## Confirmed writable exhaust fan setting — 2026-11-24
+
+During testing of the two new 0–9 Home Assistant sliders, the user set
+`Exhaust fan speed (0-9)` to **6** while the supply setting remained **9**.
+The existing percentage-based `Exhaust fan` slider moved together with
+the new exhaust slider because **both control DP 103**; this is expected,
+not cross-coupling with the supply fan DP 102.
+
+**Hardware confirmation:** the user checked the physical Hyundai controller
+and confirmed it also displayed exhaust level **6** after changing the
+Home Assistant slider. This validates the DP 103 write path at level 6.
+It does **not** yet prove the DP 102 write path from the new Number entity,
+nor safe behavior for level 0.
+
+Recommendation: preserve the existing upstream fan entity for compatibility.
+For a simplified user dashboard, hide or disable the redundant legacy
+`Exhaust fan` entity in Home Assistant's entity settings, rather than
+remove it from the device profile. The user-facing controls should be:
+ventilation power (DP 101), supply speed 0–9 (DP 102), and exhaust speed
+0–9 (DP 103).
