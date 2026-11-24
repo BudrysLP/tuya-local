@@ -145,3 +145,45 @@ a new safety interlock or guarantee simultaneous fan operation.
 
 Regression tests validate the conversion of HA level `7` to Tuya payload
 `"7"` and confirm that both controls are unavailable in three-step mode.
+
+## Live Tuya debug analysis — 2026-11-24, 10:44–10:50 Europe/Warsaw
+
+A six-minute locally exported Tuya Local debug log was analyzed without
+committing the raw log, device ID, IP addresses, tokens or encrypted frames.
+
+**Independent supply and exhaust updates were directly observed:**
+
+| Time | DP 102 supply | DP 103 exhaust | Observation |
+| --- | --- | --- | --- |
+| 10:44:58 | `"9"` | `"9"` | full poll |
+| 10:49:25 | `"4"` | `"9"` | supply DP changed |
+| 10:49:42 | `"4"` | `"4"` | exhaust DP changed |
+| 10:49:51 | `"4"` | `"7"` | exhaust DP changed |
+| 10:50:01 | `"4"` | `"9"` | exhaust DP changed |
+| 10:50:06 | `"9"` | `"9"` | supply DP changed |
+
+The log shows **incoming** device state and does not by itself attribute
+these changes to HA, a Tuya app, or the physical panel. It supports
+independent reported setpoints, **not** measured independent airflow.
+
+**DP 118 temperature-like reading:** fell progressively from 30°C
+(10:44:58) to 7°C (10:49:56–10:50:15). Interim observations were
+29, 28, 26, 24, 22, 21, 19, 17, 15, 14, 13, 12, 11, 10, 9, 8°C.
+DP 117 remained 16°C. This is a coherent changing raw value,
+not a single GUI rendering glitch. A probe warming during
+non-ventilation and cooling during airflow is a *hypothesis only*;
+the physical locations of DP 117 and DP 118 are not yet verified.
+
+**Other live updates:** DP 106 23 → 20 → 23°C;
+DP 113 humidity repeatedly 99 ↔ 100%;
+DP 101 true → false at 10:50:16, then true at 10:50:19.
+No new DP IDs appeared: the set of reported DPs remained the 18
+previously documented. DP 119 remained 0 in full polls.
+No Tuya Local integration exception was observed in this captured
+debugging interval. Scanner debug mentioned `devices.json` absence,
+which is not evidence of Tuya Local communication failure.
+
+**Next validation:** compare the temperatures at the wired controller
+during settled operation; review diagnostic state after speed changes,
+avoid setting any individual fan to 0; validate new Number sliders
+through GitHub Actions and then, with a backup, in Home Assistant.
