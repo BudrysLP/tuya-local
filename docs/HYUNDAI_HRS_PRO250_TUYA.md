@@ -120,3 +120,28 @@ without separate evidence.
 
 GitHub Actions validation: YAML workflow 45362240735 (3611 passed);
 Python workflow 45362824316 (4013 passed, 2 warnings).
+
+## Proposed separate speed sliders (awaiting hardware test)
+
+The Home Assistant device view currently shows the exhaust fan's percentage
+slider, but primarily an on/off switch for the ventilation (supply) entity.
+Both DPs `102` and `103` are distinct writable speed settings in the existing
+fan profile, so the development branch adds two **Number** entities:
+
+- `Supply fan speed (0-9)`: DP 102, Tuya string levels `"0"` through `"9"`
+- `Exhaust fan speed (0-9)`: DP 103, Tuya string levels `"0"` through `"9"`
+
+These complement rather than replace the existing fan and power entities.
+They expose *discrete settings* rather than approximate percentages, and
+accept only integer steps from 0 through 9. A separate DP 125 availability
+flag hides them whenever the device is not in nine-step mode.
+
+**IMPORTANT:** The live write behavior, especially setting either fan to
+`0`, is **not verified**. A zero setting could stop one airflow independently;
+do not test it until device safety is assessed. The changes are committed
+to GitHub, not installed in the user's running Home Assistant instance.
+The controls write the existing DP directly; their presence does not create
+a new safety interlock or guarantee simultaneous fan operation.
+
+Regression tests validate the conversion of HA level `7` to Tuya payload
+`"7"` and confirm that both controls are unavailable in three-step mode.
